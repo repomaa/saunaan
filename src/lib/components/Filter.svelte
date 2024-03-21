@@ -7,6 +7,8 @@
   const WEEKDAY_NAMES = ['su', 'ma', 'ti', 'ke', 'to', 'pe', 'la'] as const
 
   import { appointmentsFilter } from '$lib/util'
+  import { onMount } from 'svelte'
+  import { browser } from '$app/environment'
   let from = new Date()
   let to = addMonth(from, 1)
   let view = 'naistensaunavuorot'
@@ -16,7 +18,14 @@
   let weekdays = [0, 1, 2, 3, 4, 5, 6]
 
   let unfilteredAppointments: Appointment[] = []
-  $: fetchAppointments({ from, to, view }).then((a) => (unfilteredAppointments = a))
+
+  const setAppointments = async ({ from, to, view }: { from: Date; to: Date; view: string }) => {
+    unfilteredAppointments = await fetchAppointments({ from, to, view })
+  }
+
+  onMount(() => setAppointments({ from, to, view }))
+
+  $: browser && setAppointments({ from, to, view })
   $: appointments = unfilteredAppointments.filter(
     appointmentsFilter({ minFree, minTime, maxTime, weekdays }),
   )
