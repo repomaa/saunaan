@@ -1,0 +1,1 @@
+ALTER TABLE "votes" ADD CONSTRAINT "votes_participantId_appointmentId_unique" UNIQUE("participantId","appointmentId");

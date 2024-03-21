@@ -1,0 +1,34 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1710956768614,
+      "tag": "0000_flowery_kree",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1710957805534,
+      "tag": "0001_bumpy_electro",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1710957867977,
+      "tag": "0002_flashy_elektra",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1710981355595,
+      "tag": "0003_spicy_magus",
+      "breakpoints": true
+    }
+  ]
+}
