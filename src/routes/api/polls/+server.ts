@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import type { RequestHandler } from './$types'
-import db, { polls, appointments } from '$lib/server/db'
+import { polls, appointments } from '$lib/server/db/schema'
 import { parse } from '@formkit/tempo'
 import { json } from '@sveltejs/kit'
 
@@ -14,7 +14,7 @@ const payload = z.object({
   appointments: z.array(appointment),
 })
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, locals: { db } }) => {
   const body = await request.json()
   const { appointments: data } = payload.parse(body)
 

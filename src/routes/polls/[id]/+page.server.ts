@@ -1,10 +1,8 @@
-import db from '$lib/server/db'
 import { error } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 
-export const load: PageServerLoad = async ({ params: { id }, depends }) => {
+export const load: PageServerLoad = async ({ params: { id }, depends, locals: { db } }) => {
   depends(`polls:${id}`)
-
   const poll = await db.query.polls.findFirst({
     where: (polls, { eq }) => eq(polls.id, id),
     with: {

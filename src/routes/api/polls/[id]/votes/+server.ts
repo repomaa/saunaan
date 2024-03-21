@@ -1,9 +1,10 @@
 import { z } from 'zod'
 import type { RequestHandler } from './$types'
-import db, { votes, participants } from '$lib/server/db'
+import { votes, participants } from '$lib/server/db/schema'
 import { json } from '@sveltejs/kit'
 import { sql, inArray, and, eq } from 'drizzle-orm'
 import { entries, filter, isEmpty, isTruthy, map, pipe } from 'remeda'
+import type { Database } from '$lib/server/db'
 
 const payload = z.object({
   participantId: z.string().optional(),
@@ -12,10 +13,10 @@ const payload = z.object({
 })
 
 const upsertParticipant = async (
-  tx: typeof db,
+  db: Database,
   { id, pollId, name }: typeof participants.$inferInsert,
 ) => {
-  const [participant] = await tx
+  const [participant] = await db
     .insert(participants)
     .values({ id, pollId, name })
     .onConflictDoUpdate({ target: participants.id, set: { name } })
@@ -24,8 +25,8 @@ const upsertParticipant = async (
   return participant
 }
 
-const upsertVotes = async (tx: typeof db, values: Array<typeof votes.$inferInsert>) => {
-  await tx
+const upsertVotes = async (db: Database, values: Array<typeof votes.$inferInsert>) => {
+  await db
     .insert(votes)
     .values(values)
     .onConflictDoUpdate({
@@ -35,7 +36,7 @@ const upsertVotes = async (tx: typeof db, values: Array<typeof votes.$inferInser
     .execute()
 }
 
-export const POST: RequestHandler = async ({ params: { id: pollId }, request }) => {
+export const POST: RequestHandler = async ({ params: { id: pollId }, request, locals: { db } }) => {
   const body = await request.json()
   const { participantId, name, votes: voteValues } = payload.parse(body)
   const deletedVoteAppointmentIds = pipe(
