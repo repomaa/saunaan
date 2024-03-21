@@ -1,16 +1,22 @@
 <script lang="ts">
+  import { goto } from '$app/navigation'
   import AppointmentList from '$lib/components/AppointmentList.svelte'
   import Filter from '$lib/components/Filter.svelte'
   import type { Appointment } from '$lib/varaamo-client'
+  import { z } from 'zod'
 
   const createPoll = async (appointments: Appointment[]) => {
-    fetch('/api/polls', {
+    const response = await fetch('/api/polls', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ appointments }),
     })
+
+    const data = await response.json()
+    const { pollId } = z.object({ pollId: z.string() }).parse(data)
+    goto(`/polls/${pollId}`)
   }
 </script>
 
