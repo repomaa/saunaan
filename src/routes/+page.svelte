@@ -20,8 +20,8 @@
   }
 </script>
 
-<div class="container mx-auto max-w-2xl py-4">
-  <h1 class="text-5xl my-8">Saunaan</h1>
+<div class="container mx-auto max-w-3xl p-4">
+  <h1 class="text-5xl mb-8 sm:mt-8">Saunaan</h1>
 
   <Filter let:appointments>
     <div class="flex justify-between items-center w-full mb-8">
