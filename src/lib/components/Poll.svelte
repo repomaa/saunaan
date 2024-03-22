@@ -99,10 +99,17 @@
     sortedAppointments,
     map(({ votes, ...appointment }) => ({
       ...appointment,
-      count: filter(votes, ({ type }) => ['yes', 'maybe'].includes(type)).length,
+      yesCount: filter(votes, ({ type }) => type === 'yes').length,
+      maybeCount: filter(votes, ({ type }) => type === 'maybe').length,
     })),
-    filter(({ count }) => count > 0),
-    sortBy([({ count }) => count, 'desc']),
+    map(({ yesCount, maybeCount, ...appointment }) => ({
+      ...appointment,
+      yesCount,
+      maybeCount,
+      score: yesCount + maybeCount * 0.5,
+    })),
+    filter(({ score }) => score > 0),
+    sortBy([({ score }) => score, 'desc']),
     take(3),
   )
 
@@ -209,14 +216,25 @@
       <div class="mt-8">
         <h2 class="text-2xl mb-4">Parhaat vuorot</h2>
         <ul class="flex flex-col sm:flex-row gap-8 mb-8">
-          {#each bestAppointments as { from, to, count, url }}
+          {#each bestAppointments as { from, to, yesCount, maybeCount, url }}
             <li class="flex flex-col gap-3 p-3 border rounded">
               <h3 class="flex flex-col border-b-2">
                 <span class="text-sm">{format(from, 'ddd')}</span>
                 <span class="text-xl font-bold">{format(from, 'D.M.')}</span>
               </h3>
               <span class="text-sm">{format(from, 'HH:mm')} - {format(to, 'HH:mm')}</span>
-              <span class="text-sm">(Sopii {count}:lle)</span>
+              <span class="text-sm">
+                Sopii
+                {#if yesCount > 0}
+                  {yesCount}:lle
+                  {#if maybeCount > 0}
+                    +
+                  {/if}
+                {/if}
+                {#if maybeCount > 0}
+                  ehkä {maybeCount}:lle
+                {/if}
+              </span>
               <a href={url} class="text-blue-500 hover:text-blue-600 hover:underline">Varaa</a>
             </li>
           {/each}
