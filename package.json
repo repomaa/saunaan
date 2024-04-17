@@ -42,6 +42,7 @@
 	"dependencies": {
 		"@formkit/tempo": "^0.0.17",
 		"@neondatabase/serverless": "^0.9.0",
+		"@sentry/sveltekit": "^7.110.1",
 		"core-js": "^3.37.0",
 		"drizzle-orm": "^0.30.4",
 		"idb": "^8.0.0",
@@ -50,5 +51,5 @@
 		"ws": "^8.16.0",
 		"zod": "^3.22.4"
 	},
-  "browserslist": "defaults"
+	"browserslist": "defaults"
 }
