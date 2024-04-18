@@ -9,6 +9,8 @@ export default defineConfig({
         org: 'repomaa',
         project: 'saunaan',
       },
+      adapter: 'vercel',
+      autoInstrument: false,
     }),
     sveltekit(),
   ],
