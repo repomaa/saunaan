@@ -40,7 +40,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@formkit/tempo": "^0.0.17",
+		"@formkit/tempo": "^0.1.1",
 		"@neondatabase/serverless": "^0.9.0",
 		"@sentry/sveltekit": "^7.110.1",
 		"core-js": "^3.37.0",

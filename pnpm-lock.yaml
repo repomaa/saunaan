@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@formkit/tempo':
-    specifier: ^0.0.17
-    version: 0.0.17
+    specifier: ^0.1.1
+    version: 0.1.1
   '@neondatabase/serverless':
     specifier: ^0.9.0
     version: 0.9.0
@@ -1951,8 +1951,8 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /@formkit/tempo@0.0.17:
-    resolution: {integrity: sha512-2gZE6oxp3dK6HigiKWclbCigmQGrbDTHIYe3D12T88RCorRznet2bpr7/wESBi6JFtSb0Y0NTnLvg6nfAcHERg==}
+  /@formkit/tempo@0.1.1:
+    resolution: {integrity: sha512-nepRwKnCIjukLkblqh339sSXYI6P3cqktF/T7ECj3vURW+Pd+YzTv/I/lwjRqPGmlQJG93LORodIAkvgoExIAg==}
     dev: false
 
   /@humanwhocodes/config-array@0.11.14:
