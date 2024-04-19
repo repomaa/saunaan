@@ -17,6 +17,7 @@
   import { z } from 'zod'
   import { invalidate } from '$app/navigation'
   import type { Poll } from '$lib/server/db/polls'
+  import toast from '$lib/toast'
 
   export let poll: Poll
 
@@ -65,6 +66,7 @@
     await setPoll({ id: poll.id, participantId: result.participantId, name })
     participantId = result.participantId
     await invalidate(`polls:${poll.id}`)
+    toast.set('Tallennettu')
   }
 
   $: sortedAppointments = pipe(
