@@ -74,7 +74,7 @@
 
   $: groupedAppointments = pipe(
     sortedAppointments,
-    groupBy(({ from }) => format(from, 'YYYY-MM')),
+    groupBy(({ from }) => format(from, 'YYYY-MM-01')),
     entries(),
     map(
       ([date, appointments]) =>
