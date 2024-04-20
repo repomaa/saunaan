@@ -14,7 +14,7 @@
   import { format, parse } from '@formkit/tempo'
   import { onMount } from 'svelte'
   import Vote from '$lib/components/Vote.svelte'
-  import { z } from 'zod'
+  import { z, type inferFlattenedErrors } from 'zod'
   import { invalidate } from '$app/navigation'
   import type { Poll } from '$lib/server/db/polls'
   import toast from '$lib/toast'
@@ -25,6 +25,14 @@
 
   let participantId: string | undefined
   let name = ''
+
+  const form = z.object({
+    participantId: z.string().nullable(),
+    name: z.string().min(1, 'Nimi on täytettävä'),
+    votes: z.record(z.enum(['yes', 'no', 'maybe']).nullable()),
+  })
+
+  let formErrors: inferFlattenedErrors<typeof form> | undefined
 
   const restoreParticipantId = async () => {
     const { getPoll } = await import('$lib/idb')
@@ -55,10 +63,17 @@
 
   const save = async () => {
     const { setPoll } = await import('$lib/idb')
+    const parseResult = form.safeParse({ participantId, name, votes })
+    if (!parseResult.success) {
+      formErrors = parseResult.error.flatten()
+      toast.set({ type: 'error', message: 'Tallennus epäonnistui' })
+      return
+    }
+
     const response = await fetch(`/api/polls/${poll.id}/votes`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ participantId, name, votes }),
+      body: JSON.stringify(parseResult.data),
     })
     const body = await response.json()
     const result = z.object({ participantId: z.string() }).parse(body)
@@ -66,7 +81,7 @@
     await setPoll({ id: poll.id, participantId: result.participantId, name })
     participantId = result.participantId
     await invalidate(`polls:${poll.id}`)
-    toast.set('Tallennettu')
+    toast.set({ type: 'success', message: 'Tallennettu' })
   }
 
   $: sortedAppointments = pipe(
@@ -147,12 +162,18 @@
       </div>
 
       <div class="flex flex-col gap-3">
-        <input
-          type="text"
-          bind:value={name}
-          placeholder="Nimi"
-          class="p-2 border rounded self-end sticky right-0 mb-3"
-        />
+        <div class="self-end sticky flex flex-col right-0 mb-3">
+          <input
+            type="text"
+            bind:value={name}
+            placeholder="Nimi"
+            class="p-2 border bord rounded self-end sticky right-0 mb-3"
+            class:border-red-500={formErrors?.fieldErrors.name}
+          />
+          {#if formErrors?.fieldErrors.name}
+            <span class="text-sm text-red-500">{formErrors.fieldErrors.name}</span>
+          {/if}
+        </div>
 
         <ul class="flex gap-8">
           {#each groupedAppointments as [date, appointmentsForMonth]}

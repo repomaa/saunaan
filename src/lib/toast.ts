@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store'
 
-const toast = writable<string | null>(null)
+const toast = writable<{ type: 'error' | 'success', message: string } | null>(null)
 
 toast.subscribe((value) => {
   let timeout: ReturnType<typeof setTimeout> | undefined
