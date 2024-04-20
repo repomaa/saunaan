@@ -29,6 +29,41 @@
       "when": 1710981355595,
       "tag": "0003_spicy_magus",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1713606348764,
+      "tag": "0004_stormy_vindicator",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1713606435382,
+      "tag": "0005_huge_xorn",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1713606496379,
+      "tag": "0006_tricky_wild_child",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1713606582084,
+      "tag": "0007_misty_dreadnoughts",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1713607258865,
+      "tag": "0008_dazzling_arclight",
+      "breakpoints": true
     }
   ]
 }

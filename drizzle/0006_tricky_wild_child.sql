@@ -1,0 +1,1 @@
+ALTER TABLE "polls" ADD COLUMN "view" varchar DEFAULT 'miestensaunavuorot' NOT NULL;

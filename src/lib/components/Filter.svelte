@@ -101,4 +101,4 @@
   </fieldset>
 </form>
 
-<slot {appointments} />
+<slot {appointments} {view} />

@@ -11,15 +11,16 @@ const appointment = z.object({
 })
 
 const payload = z.object({
+  view: z.string(),
   appointments: z.array(appointment),
 })
 
 export const POST: RequestHandler = async ({ request, locals: { db } }) => {
   const body = await request.json()
-  const { appointments: data } = payload.parse(body)
+  const { appointments: data, view } = payload.parse(body)
 
   const pollId = await db.transaction(async (db) => {
-    const [{ pollId }] = await db.insert(polls).values({}).returning({ pollId: polls.id })
+    const [{ pollId }] = await db.insert(polls).values({ view }).returning({ pollId: polls.id })
     await db.insert(appointments).values(data.map((values) => ({ pollId, ...values })))
     return pollId
   })

@@ -5,6 +5,7 @@ export const polls = pgTable('polls', {
   id: uuid('id').primaryKey().defaultRandom(),
   description: varchar('description'),
   createdAt: timestamp('createdAt', { mode: 'date' }).defaultNow(),
+  view: varchar('view').notNull().default('naistensaunavuoro'),
 })
 
 export const pollsRelations = relations(polls, ({ many }) => ({

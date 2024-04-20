@@ -1,0 +1,1 @@
+ALTER TABLE "polls" ALTER COLUMN "view" SET DEFAULT 'naistensaunavuoro';

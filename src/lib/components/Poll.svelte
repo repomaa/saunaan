@@ -2,10 +2,13 @@
   import {
     entries,
     filter,
+    first,
+    flatMap,
     fromEntries,
     groupBy,
     isEmpty,
     isTruthy,
+    last,
     map,
     pipe,
     sortBy,
@@ -18,6 +21,7 @@
   import { invalidate } from '$app/navigation'
   import type { Poll } from '$lib/server/db/polls'
   import toast from '$lib/toast'
+  import { fetchAppointments } from '$lib/varaamo-client'
 
   export let poll: Poll
 
@@ -27,7 +31,7 @@
   let name = ''
 
   const form = z.object({
-    participantId: z.string().nullable(),
+    participantId: z.string().nullish(),
     name: z.string().min(1, 'Nimi on täytettävä'),
     votes: z.record(z.enum(['yes', 'no', 'maybe']).nullable()),
   })
@@ -67,6 +71,7 @@
     if (!parseResult.success) {
       formErrors = parseResult.error.flatten()
       toast.set({ type: 'error', message: 'Tallennus epäonnistui' })
+      console.error(formErrors)
       return
     }
 
@@ -82,10 +87,14 @@
     participantId = result.participantId
     await invalidate(`polls:${poll.id}`)
     toast.set({ type: 'success', message: 'Tallennettu' })
+    formErrors = undefined
+    setAppointments()
   }
 
+  let appointments: ((typeof poll)['appointments'][number] & { bookingsFree: number })[] = []
+
   $: sortedAppointments = pipe(
-    poll.appointments,
+    appointments,
     sortBy(({ from }) => from),
   )
 
@@ -138,7 +147,31 @@
     return `${first[0]}${last?.[0] ?? ''}`.toUpperCase()
   }
 
-  onMount(restoreParticipantId)
+  const setAppointments = async () => {
+    const sortedDates = pipe(
+      poll.appointments,
+      flatMap(({ from, to }) => [from, to]),
+      sortBy((date) => date.getTime()),
+    )
+    const fetchedAppointments = await fetchAppointments({
+      view: poll.view,
+      from: first(sortedDates)!,
+      to: last(sortedDates)!,
+    })
+
+    appointments = poll.appointments.map((appointment) => {
+      const fetchedAppointment = fetchedAppointments.find(({ url }) => url === appointment.url)
+      const bookingsFree = fetchedAppointment
+        ? fetchedAppointment.bookingsMax - fetchedAppointment.bookingsCount
+        : 0
+      return { ...appointment, bookingsFree }
+    })
+  }
+
+  onMount(() => {
+    restoreParticipantId()
+    setAppointments()
+  })
 </script>
 
 <div class="p-4 sm:p-8">
@@ -239,7 +272,7 @@
       <div class="mt-8">
         <h2 class="text-2xl mb-4">Parhaat vuorot</h2>
         <ul class="flex flex-col sm:flex-row gap-8 mb-8">
-          {#each bestAppointments as { from, to, yesCount, maybeCount, url }}
+          {#each bestAppointments as { from, to, yesCount, maybeCount, url, bookingsFree }}
             <li class="flex flex-col gap-3 p-3 border rounded">
               <h3 class="flex flex-col border-b-2">
                 <span class="text-sm">{format(from, 'ddd')}</span>
@@ -257,6 +290,9 @@
                 {#if maybeCount > 0}
                   ehkä {maybeCount}:lle
                 {/if}
+              </span>
+              <span class="text-sm">
+                Vapaita paikkoja: {bookingsFree}
               </span>
               <a href={url} class="text-blue-500 hover:text-blue-600 hover:underline">Varaa</a>
             </li>

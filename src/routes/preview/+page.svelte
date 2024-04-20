@@ -44,11 +44,12 @@
     const id = randomString(10)
     const createdAt = addHour(new Date(), Math.random() * -72)
     const participants = range(1, Math.floor(Math.random() * 10)).map(() => mockParticipant(id))
+    const [view] = sample(['naistensaunavuorot', 'miestensaunavuorot'] as const, 1)
     const appointments = range(1, Math.floor(Math.random() * 20)).map(() =>
       mockAppointment(id, participants),
     )
 
-    return { id, description: null, createdAt, participants, appointments }
+    return { id, view, description: null, createdAt, participants, appointments }
   }
 
   $: poll = mockPoll()
