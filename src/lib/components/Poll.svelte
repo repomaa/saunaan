@@ -143,8 +143,7 @@
     if (!name) {
       return ''
     }
-    const [first, last] = name.split(/\s+/)
-    return `${first[0]}${last?.[0] ?? ''}`.toUpperCase()
+    return name.slice(0, 2).toUpperCase()
   }
 
   const setAppointments = async () => {
