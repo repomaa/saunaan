@@ -95,6 +95,7 @@
 
   $: sortedAppointments = pipe(
     appointments,
+    filter(({ from }) => from.getTime() > Date.now()),
     sortBy(({ from }) => from),
   )
 
