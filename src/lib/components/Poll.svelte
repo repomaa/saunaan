@@ -135,7 +135,7 @@
       maybeCount,
       score: yesCount + maybeCount * 0.5,
     })),
-    filter(({ score }) => score > 0),
+    filter(({ score, bookingsFree, yesCount }) => score > 0 && bookingsFree >= yesCount),
     sortBy([({ score }) => score, 'desc']),
     take(3),
   )
