@@ -25,7 +25,7 @@
 
   export let poll: Poll
 
-  const types = ['yes', 'no', 'maybe', null] as const
+  const types = ['yes', 'maybe', null] as const
 
   let participantId: string | undefined
   let name = ''
@@ -33,7 +33,7 @@
   const form = z.object({
     participantId: z.string().nullish(),
     name: z.string().min(1, 'Nimi on täytettävä'),
-    votes: z.record(z.enum(['yes', 'no', 'maybe']).nullable()),
+    votes: z.record(z.enum(['yes', 'maybe']).nullable()),
   })
 
   let formErrors: inferFlattenedErrors<typeof form> | undefined
@@ -45,7 +45,7 @@
     name = storedPoll?.name ?? ''
   }
 
-  let votes: Record<string, 'yes' | 'no' | 'maybe' | null>
+  let votes: Record<string, 'yes' | 'maybe' | null>
   $: votes = pipe(
     poll.appointments,
     map(({ votes }) =>

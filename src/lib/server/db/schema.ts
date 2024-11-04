@@ -45,7 +45,7 @@ export const votes = pgTable(
   'votes',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    type: varchar('mode', { enum: ['yes', 'no', 'maybe'] }).notNull(),
+    type: varchar('mode', { enum: ['yes', 'maybe'] }).notNull(),
     participantId: uuid('participantId')
       .references(() => participants.id, { onDelete: 'cascade' })
       .notNull(),
